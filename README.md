@@ -94,4 +94,6 @@ The platform has three roles:
 - Frontend and backend form validation
 - Add-to-desktop support
 
+## Notes
+This project was developed as part of coursework for the BS in Data Science program at IIT Madras and reflects independent implementation and learning.
 
