@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const infToRating = JSON.parse('{{ inf_to_rating|tojson }}'); 
+            
+            const labels = Object.keys(infToRating); 
+            const ratings = Object.values(infToRating); 
+            
+            const ctx = document.getElementById('influencerRatingsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar', 
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Influencer Ratings',
+                        data: ratings,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)', 
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Influencers'
+                            },
+                            ticks: {
+                                autoSkip: false, 
+                                maxRotation: 45, 
+                                minRotation: 45
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Ratings'
+                            },
+                            beginAtZero: true 
+                        }
+                    }
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const infToFollowers = JSON.parse('{{ inf_to_followers|tojson }}'); 
+            
+            const labels = Object.keys(infToFollowers); 
+            const followers = Object.values(infToFollowers); 
+            
+            const ctx = document.getElementById('influencerFollowersChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar', 
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'No. of Followers',
+                        data: followers,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)', 
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Influencers'
+                            },
+                            ticks: {
+                                autoSkip: false, 
+                                maxRotation: 45, 
+                                minRotation: 45
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Followers'
+                            },
+                            beginAtZero: true 
+                        }
+                    }
+                }
+            });
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const infToActivity = JSON.parse('{{ inf_to_activity|tojson }}'); 
+            
+            const labels = Object.keys(infToActivity); 
+            const activity = Object.values(infToActivity); 
+            
+            const ctx = document.getElementById('influencerActivityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar', 
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Activity',
+                        data: activity,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)', 
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Influencers'
+                            },
+                            ticks: {
+                                autoSkip: false, 
+                                maxRotation: 45, 
+                                minRotation: 45
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Activity'
+                            },
+                            beginAtZero: true ,
+                            ticks: {
+                                display: false 
+                            },
+                            grid: {
+                                drawTicks: false 
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const spToActivity = JSON.parse('{{ sp_to_activity|tojson }}'); 
+            
+            const labels = Object.keys(spToActivity); 
+            const activity = Object.values(spToActivity); 
+            
+            const ctx = document.getElementById('sponsorActivityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar', 
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Activity',
+                        data: activity,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)', 
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'sponsors'
+                            },
+                            ticks: {
+                                autoSkip: false, 
+                                maxRotation: 45, 
+                                minRotation: 45
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Activity'
+                            },
+                            beginAtZero: true ,
+                            ticks: {
+                                display: false 
+                            },
+                            grid: {
+                                drawTicks: false 
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+    <title>AdConnect</title>
+    <link rel="stylesheet" href="/static/style.css"
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <span class="navbar-brand"> <i class="fas fa-network-wired"> AdConnect</i></span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <h2 style="color: rgb(235, 64, 64)">Admin Dashboard </h2><br>
+                
+            </ul>
+        </div>
+    </nav>
+    <div class="sidebar">
+        <div class="middle-links">
+            <a href="/admin/view_campaigns">Campaigns</a>
+            <a href="/admin/view_influencers">Influencers</a>
+            <a href="/admin/view_sponsors">Sponsors</a>
+        </div>
+        <div class="bottom-links">
+            <a href="/admin_dashboard">Dashboard</a>
+            <a href="/adminlogin" class="logout-link">Logout</a>
+        </div>
+    </div>
+    
+
+    <div id="app">
+    <div class="content">
+        {% if CAMP %}
+            {% if camps %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Campaign</th>
+                        <th>Sponsor</th>
+                        <th>Approval status</th>
+                        <th>See campaign details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for x in camps %}
+                    <tr>
+                        <td>{{x.name}}</td>
+                        <td>
+                            {{x.sponsor_name}}<br>
+                            <a href="/admin/sp_detail/{{x.sponsor_id}}">Visit profile</a> 
+                        </td>
+                        <td>{% if x.approved=="approved" %}Approved✅{% elif x.approved=="flagged"%}Flagged🚩{% else %}Unapproved🔵{% endif %}</td>
+                        <td><a href="/admin/camp_detail/{{x.campaign_id}}">See more</a> </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p>No active campaigns.</p>
+            {% endif %}
+        {% endif %}
+
+
+
+        {% if INF %}
+        {% if infs %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Influencer</th>
+                    <th>Approval status</th>
+                    <th>Go to Profile</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in infs %}
+                <tr>
+                    <td>{{x.user_name}}</td>
+                    <td>{% if x.approved=="approved" %}Approved✅{% elif x.approved=="flagged"%}Flagged🚩{% else %}Unapproved🔵{% endif %}</td>
+                    <td>
+                        <a href="/admin/inf_detail/{{x.user_id}}">Visit profile</a> 
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <h5>MOST ACTIVE INFLUENCERS:</h5><BR>
+            <canvas id="influencerActivityChart" width="400" height="300"></canvas>
+        <br><br>
+        <h5>TOP RATED INFLUENCERS:</h5><BR>
+            <canvas id="influencerRatingsChart" width="400" height="300"></canvas>
+
+        <br><br>
+        <h5>INFLUENCERS WITH HIGHEST FOLLOWERS:</h5><BR>
+            <canvas id="influencerFollowersChart" width="400" height="300"></canvas>
+        <br><br>
+        
+        {% else %}
+            <p>No influencers.</p>
+        {% endif %}
+        {% endif %}
+
+
+
+        {% if SP %}
+        {% if sps %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sponsor</th>
+                    <th>Approval status</th>
+                    <th>Go to Profile</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in sps %}
+                <tr>
+                    <td>{{x.user_name}}</td>
+                    <td>{% if x.approved=="approved" %}Approved✅{% elif x.approved=="flagged"%}Flagged🚩{% else %}Unapproved🔵{% endif %}</td>
+                    <td>
+                        <a href="/admin/sp_detail/{{x.user_id}}">Visit profile</a> 
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <h5>MOST ACTIVE SPONSORS:</h5><BR>
+            <canvas id="sponsorActivityChart" width="400" height="300"></canvas>
+        {% else %}
+            <p>No sponsors.</p>
+        {% endif %}
+        {% endif %}
+    </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="/static/vue.js"></script> 
+</body>
+</html>
+
+
+
+

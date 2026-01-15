@@ -1,0 +1,127 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    
+}
+.sidebar {
+    background-color: #003366;
+    border-right: 1px solid #dee2e6;
+    color: #FFFFFF;
+    height: calc(100vh - 56px);
+    position: fixed;
+    top: 56px;
+    width: 100px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 0; 
+}
+
+.sidebar a {
+    color: #fff;
+    padding: 10px;
+    text-decoration: none;
+}
+.sidebar .middle-links {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0px; ;
+    margin-bottom: auto 
+}
+.logout-link {
+    margin-top: auto; 
+    text-align: center;
+    color: red;
+}
+.bottom-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    gap: 5px; 
+}
+
+
+.sidebar a:not(.logout-link) {
+    align-self: center; 
+    margin-bottom: 5px; 
+}
+
+.content {
+    margin-left: 100px; 
+    margin-top: 56px; 
+    padding: 20px;
+    height: calc(100vh - 56px);
+    overflow-y: auto; 
+    
+}
+
+.box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; 
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    background-color:#F0F0F0;
+}
+.modal {
+    display: block;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%;
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    }
+
+.rating input[type="radio"] {
+    display: none;
+}
+
+.rating label {
+    font-size: 2em;
+    color: lightgray;
+    cursor: pointer;
+}
+
+.rating input[type="radio"]:checked ~ label {
+    color: gold;
+}
+
+.rating label:hover,
+.rating label:hover ~ label {
+color: gold;
+}

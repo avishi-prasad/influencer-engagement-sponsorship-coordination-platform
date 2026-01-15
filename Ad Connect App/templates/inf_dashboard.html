@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>AdConnect</title>
+    
+</head>
+
+<body>
+    {% if flagged %}<br><h5 style="text-align: center; color:red">You have been Flagged🚩.</h5>
+    {% else %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <span class="navbar-brand"> <i class="fas fa-network-wired"> AdConnect</i></span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/influencer/{{username}}/search">Search </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/influencer/{{username}}/profile">| {{username}} <i class="fas fa-user-alt"></i> Profile</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="sidebar">
+        <br>
+        <br>
+        <br>
+        <a href="/" class="logout-link">Logout</a>
+    </div>
+    <div id="app" data-username="{{ username }}" data-description="{{ description }}" data-followers="{{ followers }}">
+    <div class="content">
+        {% if negotiation %}
+        <div style="text-align: center;">
+         <h5>Request sent for Campaign: {{camp_name}} <br> Amount: Rs. {{amt}} <br>{% if msg %}Message: {{msg}}{% else %}No message attached.{% endif %}</h5>
+         <a href="/influencer/{{username}}/profile">Go Back</a></div>
+        {% endif %}
+
+
+        {% if profile %}
+        <h4>Welcome Influencer {{username}} !</h4><br>
+        <div style="display: flex; align-items: center;">
+            <div>
+                <img src="/static/profilepic.png" style="max-height: 5cm;">
+            </div>
+            <div style="margin-left: 10px; ">
+                <p><strong>USER ID: </strong><span style="font-size: larger;"> {{user_id}}</span></p>
+                <p><strong>USERNAME: </strong><span style="font-size: larger;"> {{username}}{% if approved=="approved" %}✅{% elif approved=="flagged" %}🚩 {% else %}🔵{% endif %}</span></p>
+                <p><strong>EMAIL ID: </strong><span style="font-size: larger;"> {{email}}</span><br>
+                <button @click="showModal4 = true;" style="background-color:#aaaedc; color: #1f1616; font-size: smaller;">Edit/Add Email Id </button>
+                <add-email v-if="showModal4" @close="showModal4 = false" @submit="editEmail" :username="'{{username}}'" :email="'{{email}}'"></add-email>
+                <p><strong>APPROVED BY ADMIN: </strong><span style="font-size: larger;"> {% if approved=="approved" %}Approved{% elif approved=="flagged" %}Flagged {% else %}Pending{% endif %}</span></p>
+                <p><strong>CATEGORY: </strong><span style="font-size: larger;"> {{category}}</span><br>
+                <button @click="showModal3 = true;" style="background-color:#aaaedc; color: #1f1616; font-size: smaller;">Edit/Add Category </button>
+                <add-cat v-if="showModal3" @close="showModal3 = false" @submit="editCategory" :username="'{{username}}'" :category="'{{category}}'"></add-cat>
+                <p><strong>RATING: </strong><span style="font-size: larger;"> {{rating}} {% if rating %}<span style="color:#FFD700; font-size: larger; ">★</span>{% endif %}</span></p>
+                <p><strong>FOLLOWERS: </strong><span style="font-size: larger;"> {{followers}}</span></p>
+                <button @click="showModal2 = true;" style="background-color:#aaaedc; color: #1f1616;font-size: smaller;">Edit no. of followers </button>
+                <add-foll v-if="showModal2" @close="showModal2 = false" @submit="editFoll" :username="'{{username}}'" :followers="'{{followers}}'"></add-foll>
+                <p><strong>DESCRIPTION: </strong><span style="font-size: larger;"> {{description}}</span><br>
+                <button @click="showModal = true;" style="background-color:#aaaedc; color: #1f1616;font-size: smaller;">Edit description </button>
+                <edit-desc v-if="showModal" @close="showModal = false" @submit="editDesc" :username="'{{username}}'" :description="'{{description}}'"></edit-desc>
+                <p><strong>EARNINGS THIS:</strong> <span style="font-size: larger;">Rs. {{earnings}}</span></p>
+            </div>
+            <div  style="margin-right: 10px;font-size: smaller;"></div>
+        </div>
+        <br>
+        <br>
+        <h5><strong>JOINED CAMPAIGNS:</strong></h5>
+        {% if active_requests %}
+        <div>
+            {% for x in active_requests %}
+            <div class="box">
+                <span>CAMPAIGN NAME: <b>{{ x.campaign_name }}{% if x.camp_approved=="approved" %}✅{% elif x.camp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>sponsor : <b>{{ x.sponsor_name }}{% if x.sp_approved=="approved" %}✅{% elif x.sp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>REQUIREMENTS : <b>{{ x.requirements }}</b>
+                    <br>AMOUNT: <b>Rs.{{ x.payment_amount }}</b>
+                    <br>END DATE:<b>{{x.end_date}}</b>
+                </span>
+                <span> <a href="/influencer/{{username}}/reject_request/{{x['adrequest_id']}}"><button style="background-color: rgb(224, 174, 191);">Reject</button></a></span>
+        </div>{% endfor %}
+        </div>
+        {% else %}
+        <div>
+            <p>No campaigns joined yet.</p>
+        </div>
+        {% endif %}
+        <br>
+        <br>
+        <h5><strong>AD REQUESTS:</strong></h5>
+        {% if pending_requests %}
+        <div>
+            {% for x in pending_requests %}
+            <div class="box">
+                <span>CAMPAIGN NAME: <b>{{ x.campaign_name }}{% if x.camp_approved=="approved" %}✅{% elif x.camp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>sponsor : <b>{{ x.sponsor_name }}{% if x.sp_approved=="approved" %}✅{% elif x.sp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>REQUIREMENTS : <b>{{ x.requirements }}</b>
+                    <br>AMOUNT: <b>Rs.{{ x.payment_amount }}</b>
+                    <br>END DATE:<b>{{x.end_date}}</b>
+                </span>
+                <span><a href="/influencer/{{username}}/accept_request/{{x['adrequest_id']}}"><button style="background-color:rgb(152, 215, 190) ;">Accept</button></a> 
+                <a href="/influencer/{{username}}/reject_request/{{x['adrequest_id']}}"><button style="background-color: rgb(224, 174, 191);">Reject</button></a>
+                <a href="/influencer/{{username}}/negotiate/{{x['adrequest_id']}}"><button style="background-color:rgb(222, 235, 150) ;">Negotiate</button></a>
+                </span>
+                
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div>
+            <p>No requests.</p>
+        </div>
+        {% endif %}
+        <br>
+        <br>
+        
+        {% if nego_requests %}
+        <h5><strong>PENDING NEGOTIATED REQUESTS SENT BY YOU:</strong></h5>
+        <div>
+            {% for x in nego_requests %}
+            <div class="box">
+                <span>CAMPAIGN NAME: <b>{{ x.campaign_name }}{% if x.camp_approved=="approved" %}✅{% elif x.camp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>sponsor NAME: <b>{{x.sponsor_name}}{% if x.sp_approved=="approved" %}✅{% elif x.sp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>OFFERED AMOUNT:<b>Rs.{{x.payment_amount}}</b>
+                    <br>NEGOTIATED AMOUNT: <b>Rs.{{x.negotiation_amount}}</b>
+                    <br>MESSAGE ATTACHED: <b>{{x.negotiation_message}}</b>
+                </span>
+                
+            </div>
+            {% endfor %}
+        </div>
+        <br>
+        <br>
+        {% endif %}
+        
+        {% if rejected_requests %}
+        <h5><strong>REQUESTS REJECTED BY YOU:</strong></h5>
+    
+        {% for x in rejected_requests %}
+            <div class="box">
+                <span>CAMPAIGN NAME: <b>{{ x.campaign_name }}{% if x.camp_approved=="approved" %}✅{% elif x.camp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>sponsor : <b>{{ x.sponsor_name }}{% if x.sp_approved=="approved" %}✅{% elif x.sp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>REQUIREMENTS : <b>{{ x.requirements }}</b>
+                    <br>AMOUNT: <b>Rs.{{ x.payment_amount }}</b>
+                    <br>END DATE:<b>{{x.end_date}}</b>
+                </span>
+        </div>{% endfor %}
+        <br><br>
+        {% endif %}
+        
+        {% if rejected_by_sp %}
+        <h5><strong>REQUESTS REJECTED BY sponsor:</strong></h5>
+    
+        {% for x in rejected_by_sp %}
+            <div class="box">
+                <span>CAMPAIGN NAME: <b>{{ x.camp_name }}{% if x.camp_approved=="approved" %}✅{% elif x.camp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>sponsor NAME: Rs.<b>{{x.sponsor_name}}{% if x.sp_approved=="approved" %}✅{% elif x.sp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>AMOUNT: <b>Rs.{{ x.payment_amount }}</b>
+                    <br>END DATE: <b>{{x.end_date}}</b>
+                </span>
+                <span>
+                    {% if x.nego_rej %}<a href="/influencer/{{username}}/reaccept_adrequest/{{x.adrequest_id}}">Accept request with orignal budget?</a> {% endif %}
+                </span>
+                </div>
+        {% endfor %}
+        <br><br>
+        {% endif %}
+
+        {% if pending_sent_by_inf %}
+        <h5><strong>PENDING REQUESTS SENT BY YOU:</strong></h5>
+        <div>
+            {% for x in pending_sent_by_inf %}
+            <div class="box">
+                <span>CAMPAIGN NAME: <b>{{ x.camp_name }}{% if x.camp_approved=="approved" %}✅{% elif x.camp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>sponsor NAME: Rs.<b>{{x.sponsor_name}}{% if x.sp_approved=="approved" %}✅{% elif x.sp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>AMOUNT: <b>Rs.{{ x.payment_amount }}</b>
+                    <br>END DATE: <b>{{x.end_date}}</b>
+                </span>
+                <span><a href="/influencer/{{username}}/delete_adrequest/{{x.adrequest_id}}"><button style="background-color:rgb(224, 174, 191);">Delete Request</button></a> 
+                </span>
+        </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+
+        {% if completed_campaigns %}
+        <h5><strong>COMPLETED CAMPAIGNS:</strong></h5>
+        <div>
+            {% for x in completed_campaigns %}
+            <div class="box">
+                <span>CAMPAIGN NAME: <b>{{ x.campaign_name }}{% if x.camp_approved=="approved" %}✅{% elif x.camp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>sponsor : <b>{{ x.sponsor_name }}{% if x.sp_approved=="approved" %}✅{% elif x.sp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>REQUIREMENTS : <b>{{ x.requirements }}</b>
+                    <br>AMOUNT: <b> Rs.{{ x.payment_amount }}</b>
+                    <br>END DATE:<b>{{x.end_date}}</b>
+                </span>
+        </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <br>
+        
+        {% endif %}
+
+        {% if search %}
+        <search-bar :username="'{{username}}'"></search-bar><br>
+        <div>
+        {% if campaigns and campaigns|length>0 %}
+        <div>
+            {% for x in campaigns %}
+            <div class="box">
+                <span>CAMPAIGN NAME: <b>{{ x.name }}{% if x.camp_approved=="approved" %}✅{% elif x.camp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>sponsor NAME: Rs.<b>{{x.sponsor_name}}{% if x.sp_approved=="approved" %}✅{% elif x.sp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>CATEGORY : <b>{{ x.category }}</b>
+                    <br>BUDGET: <b>{{x.budget}}</b>
+                    <br>STARTED ON: <b>{{x.start_date}}</b>
+                    <br>END DATE: <b>{{x.end_date}}</b>
+                </span>
+                <span><a href="/influencer/{{username}}/details/camp/{{x.campaign_id}}"><button style="background-color: rgb(224, 174, 191);">See Details</button></a> </span>
+            </div>
+            {% endfor %}<br>
+            {% if result %}<p><a href="/inf/{{username}}/search">Show all active campaigns</a></p>{% endif %}
+            </div>
+        {% else %}
+            <div>
+            <p>Oops! No campaigns found.</p>
+            </div><a href="/inf/{{username}}/search">Show all active campaigns</a>
+            {% endif %}
+            </div>
+        {% endif %}
+    </div></div>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="/static/vue.js"></script> 
+    {% endif %}
+</body>
+</html>

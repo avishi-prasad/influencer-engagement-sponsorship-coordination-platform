@@ -1,0 +1,47 @@
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .section { margin-bottom: 20px; }
+        .table { width: 100%; border-collapse: collapse; }
+        .table th, .table td { border: 1px solid #ddd; padding: 8px; }
+        .table th { background-color: #f4f4f4; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1 class="header">Monthly Activity Report - {{ current_month }}</h1>
+    <h3>Hello {{ sponsor.name }},</h3>
+    <p>Here's your activity report for {{ current_month }}:</p>
+
+    <div class="section">
+        <h2>Campaign Overview</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Campaign</th>
+                    <th>Ads Done</th>
+                    <th>Sales Growth</th>
+                    <th>Budget Used</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for campaign in campaigns %}
+                <tr>
+                    <td>{{ campaign.name }}</td>
+                    <td>{{ campaign.ad_count }}</td>
+                    <td>{{ campaign.reach }}</td>
+                    <td>Rs. {{ campaign.budget_used }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Budget Summary</h2>
+        <p><strong>Total Budget Used:</strong> Rs. {{ budget_used }}</p>
+        <p><strong>Budget Remaining:</strong> Rs. {{ budget_remaining }}</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>AdConnect</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const reachData = JSON.parse('{{ reach_data|tojson }}'); 
+    
+            const labels = reachData.map(data => data.date); 
+            const reachValues = reachData.map(data => data.total_reach); 
+    
+            const ctx = document.getElementById('campaignReachChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Cumulative Reach',
+                        data: reachValues,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Total Reach'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>    
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <span class="navbar-brand"> <i class="fas fa-network-wired"> AdConnect</i></span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <h2 style="color: rgb(235, 64, 64)">Admin Dashboard </h2><br>
+                
+            </ul>
+        </div>
+    </nav>
+    <div class="sidebar">
+        <div class="middle-links">
+            <a href="/admin/view_campaigns">Campaigns</a>
+            <a href="/admin/view_influencers">Influencers</a>
+            <a href="/admin/view_sponsors">Sponsors</a>
+        </div>
+        <div class="bottom-links">
+            <a href="/admin_dashboard">Dashboard</a>
+            <a href="/adminlogin" class="logout-link">Logout</a>
+        </div>
+    </div>
+    
+
+    <div id="app">
+    <div class="content">
+        {% if CAMP %}
+            {% if x %}
+            <h5><b>CAMPAIGN DETAILS:</b></h5><br>
+            <div>
+                <span>CAMPAIGN ID: <b>{{ x.campaign_id }}</b>
+                    <br>CAMPAIGN NAME: <b>{{ x.name }}{% if x.approved=="approved" %}✅{% elif x.approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>sponsor: <b>{{ x.sponsor_name }}{% if x.sp_approved=="approved" %}✅{% elif x.sp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</b>
+                    <br>DESCRIPTION: <b>{{x.description}}</b>
+                    <br>AMOUNT: Rs.<b>{{x.budget}}</b>
+                    <br>STARTED ON: <b>{{x.start_date}}</b>
+                    <br>END DATE: <b>{{x.end_date}}</b>
+                </span>
+                <span style="float: right;">
+                    {% if x.approved=="approved" %}<a href="/flag/campaign/{{ x.campaign_id }}"><button style="background-color: rgb(246, 142, 130);">Flag {{x.name}}</button></a>{% elif x.approved=="flagged" %}<a href="/approve/campaign/{{ x.campaign_id }}"><button style="background-color:rgb(145, 227, 145);">Approve {{x.name}}</button></a> {% else %}<a href="/approve/campaign/{{ x.campaign_id }}"><button style="background-color:rgb(145, 227, 145);">Approve {{x.name}}</button></a>  <a href="/flag/campaign/{{ x.campaign_id }}"><button style="background-color: rgb(246, 142, 130);">Flag {{x.name}}</button></a>{% endif %}
+                </span>
+            </div>
+                {% if camp_ended %}
+                    <h3 style="color: red; text-align: center;">Campaign Ended</h3>
+                {% else %}
+                    <h4 style="color:red;text-align: center;">{% if days_left %}{{days_left}} left.{% endif %}  {% if days_passed %}{{days_passed}} past end date !!{% endif %}  {% if last_day %}Ending today.{% endif %}</h4>
+                {% endif %}
+            <br>
+       <br>
+        {% if requests %}
+            <h5>INFLUENCERS WHO JOINED: {{count}}</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Influencer name</th>
+                                <th>Date of Joining</th>
+                                <th>Visit Profile</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for x in requests %}
+                            <tr>
+                                <td>{{x.inf_name}}{% if x.inf_approved=="approved" %}✅{% elif x.inf_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</td>
+                                <td>{{x.date_of_joining}}</td>
+                                <td>
+                                    <a href="/admin/inf_detail/{{x.influencer_id}}">{{x.inf_name}}'s Profile</a> 
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <br>
+                <h5><b>Total amount spent :</b>   Rs. {{total_amount}}</h5>
+        {% else %}
+            <h5>NO INFLUENCERS JOINED THIS CAMPAIGN.</h5>
+        {% endif %}<br>
+        <br>
+
+        <div>
+            <h5>CAMPAIGN REACH OVER TIME:</h5><br>
+            <canvas id="campaignReachChart" width="400" height="300"></canvas>
+        </div>
+        
+
+    </div>
+</div>
+            {% else %}
+                <p>No campaign found.</p>
+            {% endif %}
+        {% endif %}
+
+
+
+        {% if INF %}
+            {% if inf %}
+            <h5><b>INFLUENCER DETAILS:</b></h5><br>
+                <div><span>
+                    <b>INFLUENCER NAME:</b> {{inf.user_name}}{% if inf.approved=="approved" %}✅{% elif inf.approved=="flagged" %}🚩 {% else %}🔵{% endif %}
+                    <br><br><b>CATEGORY:</b> {{inf.category}}<br>
+                    <br><b>RATING:</b> {{inf.rating}}{% if inf.rating %}<span style="color:#FFD700; font-size: larger; ">★</span>{% endif %}<br>
+                    <br><b>FOLLOWERS:</b> {{inf.followers}}<br>
+                    <br><b>DESCRIPTION:</b> {{inf.description}}<br>
+                </span>
+                <span style="float: right;">
+                    {% if inf.approved=="approved" %}<a href="/flag/influencer/{{ inf.user_id }}"><button style="background-color: rgb(246, 142, 130);">Flag {{inf.user_name}}</button></a>{% elif inf.approved=="flagged" %}<a href="/approve/influencer/{{ inf.user_id }}"><button style="background-color:rgb(145, 227, 145);">Approve {{inf.user_name}}</button></a> {% else %}<a href="/approve/influencer/{{ inf.user_id }}"><button style="background-color:rgb(145, 227, 145);">Approve {{inf.user_name}}</button></a>  <a href="/flag/influencer/{{ inf.user_id }}"><button style="background-color: rgb(246, 142, 130);">Flag {{inf.user_name}}</button></a>{% endif %}
+                      
+                </span></div>
+                <br><br>
+                {% if joined_camps %}
+                <h5>JOINED CAMPAIGNS:</h5>
+                <br>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Date of joining</th>
+                            <th>Status</th>
+                            <th>See campaign details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for x in joined_camps %}
+                        <tr>
+                            <td>{{x.campaign_name}}{% if x.camp_approved=="approved" %}✅{% elif x.camp_approved=="flagged" %}🚩 {% else %}🔵{% endif %}</td>
+                            <td>{{x.date_of_joining}}</td>
+                            <td>{% if x.status=="accepted" %}Active{% elif x.status=="completed" %}Completed{% endif %}</td>
+                            <td>
+                                <a href="/admin/camp_detail/{{x.campaign_id}}">See {{x.campaign_name}} details</a> 
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <b><h5>No campaigns joined by {{inf.user_name}}.</h5></b>
+                {% endif %}
+                <div>
+
+                </div>
+            {% else %}
+                <p>No influencer found.</p>
+            {% endif %}
+        {% endif %}
+
+
+
+        {% if SP %}
+            {% if sp %}
+            <h5><b>SPONSOR DETAILS:</b></h5><br>
+            <div><span>
+                <b>SPONSOR NAME:</b> {{sp.user_name}}{% if sp.approved=="approved" %}✅{% elif sp.approved=="flagged" %}🚩 {% else %}🔵{% endif %}
+                <br><br><b>INDUSTRY:</b> {{sp.category}}<br>
+                <br><b>STARTED CAMPAIGNS:</b> {{total_camps|length}}<br>
+            </span>
+            <span style="float: right;">
+                {% if sp.approved=="approved" %}<a href="/flag/sponsor/{{ sp.user_id }}"><button style="background-color: rgb(246, 142, 130);">Flag {{sp.user_name}}</button></a>{% elif sp.approved=="flagged" %}<a href="/approve/sponsor/{{ sp.user_id }}"><button style="background-color:rgb(145, 227, 145);">Approve {{sp.user_name}}</button></a> {% else %}<a href="/approve/sponsor/{{ sp.user_id }}"><button style="background-color:rgb(145, 227, 145);">Approve {{sp.user_name}}</button></a>  <a href="/flag/sponsor/{{ sp.user_id }}"><button style="background-color: rgb(246, 142, 130);">Flag {{sp.user_name}}</button></a>{% endif %}
+            </span>
+            </div><br><br>
+            {% if total_camps %}
+            <h5>CAMPAIGNS RAISED BY {{sp.user_name}}:</h5>
+            <br>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Campaign</th>
+                        <th>Start Date</th>
+                        <th>Start Date</th>
+                        <th>Influencers invloved</th>
+                        <th>Status</th>
+                        <th>See campaign details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for x in total_camps %}
+                    <tr>
+                        <td>{{x.name}}{% if x.approved=="approved" %}✅{% elif x.approved=="flagged" %}🚩 {% else %}🔵{% endif %}</td>
+                        <td>{{x.start_date}}</td>
+                        <td>{{x.end_date}}</td>
+                        <td style="text-align: center;">{{x.infs}}</td>
+                        <td>{% if x.status=="active" %}Active{% elif x.status=="inactive" %}Completed{% endif %}</td>
+                        <td>
+                            <a href="/admin/camp_detail/{{x.campaign_id}}">See {{x.name}} details</a> 
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <b><h5>No campaigns started by {{sp.user_name}}.</h5></b>
+            {% endif %}
+            <div>
+
+            </div>
+            {% else %}
+                <p>No sponsor found.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="/static/vue.js"></script> 
+</body>
+</html>
